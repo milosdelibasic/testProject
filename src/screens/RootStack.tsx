@@ -6,9 +6,9 @@ import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import ProfileScreen from './ProfileScreen';
 
-import { screens } from '../utils/screens';
+import { RootStackParamList, screens } from '../utils/screens';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack: React.FC = () => {
   const isLoggedIn = false;
