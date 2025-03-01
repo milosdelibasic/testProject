@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useSelector } from 'react-redux';
 
 import HomeScreen from './HomeScreen';
 import AuthScreen from './AuthScreen';
@@ -7,13 +8,14 @@ import RegisterScreen from './RegisterScreen';
 import ProfileScreen from './ProfileScreen';
 
 import { RootStackParamList, screens } from '../utils/screens';
+import { RootState } from '../redux/store';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack: React.FC = () => {
-  const isLoggedIn = false;
+  const { user } = useSelector((state: RootState) => state.auth);
 
-  if (isLoggedIn) {
+  if (user) {
     return (
       <Stack.Navigator>
         <Stack.Screen name={screens.homeScreen} component={HomeScreen} />

@@ -1,16 +1,24 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { useDispatch, useSelector } from 'react-redux';
+
 import Button from '../components/Button';
 
+import { AppDispatch, RootState } from '../redux/store';
+import { registerUser } from '../redux/slices/authSlice';
+
 import { colors } from '../utils/colors';
-import { validateEmail, validatePassword } from '../utils/helpers';
+import { validateEmail } from '../utils/helpers';
 
 const RegisterScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const handleRegister = () => {
     if (!email || !password || !confirmPassword) {
@@ -28,16 +36,14 @@ const RegisterScreen: React.FC = () => {
       return;
     }
 
-    if (!validatePassword(password)) {
-      setErrorMessage(
-        'Password must be at least 8 characters, contain one uppercase letter, one lowercase letter, and one symbol.'
-      );
+    if (password.length < 3) {
+      setErrorMessage('Password must be at least 3 characters');
       return;
     }
 
     setErrorMessage('');
 
-    //TODO API CALL for registration
+    dispatch(registerUser({ email, password }));
   };
 
   return (
@@ -65,10 +71,15 @@ const RegisterScreen: React.FC = () => {
         onChangeText={setConfirmPassword}
         secureTextEntry
       />
-      {errorMessage ? (
-        <Text style={styles.errorText}>{errorMessage}</Text>
+      {errorMessage || error ? (
+        <Text style={styles.errorText}>{errorMessage || error}</Text>
       ) : null}
-      <Button onPress={handleRegister} style="primary" label="Register" />
+      <Button
+        onPress={handleRegister}
+        style="primary"
+        label="Register"
+        isLoading={loading}
+      />
     </View>
   );
 };

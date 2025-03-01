@@ -1,15 +1,23 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { useDispatch, useSelector } from 'react-redux';
+
 import Button from '../components/Button';
 
+import { AppDispatch, RootState } from '../redux/store';
+import { loginUser } from '../redux/slices/authSlice';
+
 import { colors } from '../utils/colors';
-import { validateEmail, validatePassword } from '../utils/helpers';
+import { validateEmail } from '../utils/helpers';
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const handleLogin = () => {
     if (!email || !password) {
@@ -22,17 +30,14 @@ const LoginScreen: React.FC = () => {
       return;
     }
 
-    if (!validatePassword(password)) {
-      setErrorMessage(
-        'Password must be at least 8 characters, contain one uppercase letter, one lowercase letter, and one symbol.'
-      );
+    if (password.length < 3) {
+      setErrorMessage('Password must be at least 3 characters');
       return;
     }
 
     setErrorMessage('');
 
-    //TODO API CALL
-    console.log('Form is valid, ready for API call');
+    dispatch(loginUser({ email, password }));
   };
 
   return (
@@ -52,10 +57,15 @@ const LoginScreen: React.FC = () => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      {errorMessage ? (
-        <Text style={styles.errorText}>{errorMessage}</Text>
+      {errorMessage || error ? (
+        <Text style={styles.errorText}>{errorMessage || error}</Text>
       ) : null}
-      <Button onPress={handleLogin} style="primary" label="Login" />
+      <Button
+        onPress={handleLogin}
+        style="primary"
+        label="Login"
+        isLoading={loading}
+      />
     </View>
   );
 };
