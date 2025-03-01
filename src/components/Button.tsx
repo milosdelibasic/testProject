@@ -33,7 +33,7 @@ const Button: React.FC<Props> = ({
         style == 'tertiary' && styles.tertiary
       ]}>
       {isLoading ? (
-        <ActivityIndicator size="small" color="blue" />
+        <ActivityIndicator size="small" color="white" />
       ) : (
         <Text
           style={[

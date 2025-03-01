@@ -3,6 +3,7 @@ export const colors = {
   primaryBackground: '#0A0D1F',
   secondaryBackground: '#1B2635',
   cardBackground: '#16222E',
+  inputBackground: '#1e2a47',
 
   // Text
   primaryText: '#EAEAEA',
