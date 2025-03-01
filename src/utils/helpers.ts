@@ -3,8 +3,5 @@ export const validateEmail = (email: string) => {
   return regex.test(email);
 };
 
-export const validatePassword = (password: string) => {
-  const regex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
-  return regex.test(password);
-};
+export const sleep = (ms: number) =>
+  new Promise(resolve => setTimeout(resolve, ms));
