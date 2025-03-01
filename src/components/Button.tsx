@@ -50,7 +50,9 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    borderRadius: 16
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   primary: {
     backgroundColor: colors.primaryButtonBackground
