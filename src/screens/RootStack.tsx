@@ -9,6 +9,7 @@ import ProfileScreen from './ProfileScreen';
 
 import { RootStackParamList, screens } from '../utils/screens';
 import { RootState } from '../redux/store';
+import { colors } from '../utils/colors';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -17,7 +18,18 @@ const RootStack: React.FC = () => {
 
   if (user) {
     return (
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: colors.primaryBackground
+          },
+          headerTitleStyle: {
+            color: colors.primaryText,
+            fontSize: 20,
+            fontWeight: 'bold'
+          },
+          headerTintColor: colors.primaryText
+        }}>
         <Stack.Screen name={screens.homeScreen} component={HomeScreen} />
         <Stack.Screen name={screens.profileScreen} component={ProfileScreen} />
       </Stack.Navigator>
@@ -25,7 +37,18 @@ const RootStack: React.FC = () => {
   }
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.primaryBackground
+        },
+        headerTitleStyle: {
+          color: colors.primaryText,
+          fontSize: 20,
+          fontWeight: 'bold'
+        },
+        headerTintColor: colors.primaryText
+      }}>
       <Stack.Screen
         name={screens.authScreen}
         component={AuthScreen}
