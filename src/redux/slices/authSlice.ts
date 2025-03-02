@@ -21,6 +21,30 @@ const initialState: AuthState = {
   error: null
 };
 
+export const updateUserProfile = createAsyncThunk(
+  'auth/updateUserProfile',
+  async (
+    {
+      id,
+      first_name,
+      last_name,
+      email
+    }: { id: number; first_name: string; last_name: string; email: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.put(`${BASE_URL}/users/${id}`, {
+        first_name,
+        last_name,
+        email
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue('Failed to update user profile');
+    }
+  }
+);
+
 export const fetchUserProfile = createAsyncThunk(
   'auth/fetchUserProfile',
   async (id: number, { rejectWithValue }) => {
@@ -143,6 +167,19 @@ const authSlice = createSlice({
       })
       .addCase(fetchUserProfile.rejected, state => {
         state.loadingUserInfo = false;
+      })
+      //Edit Profile
+      .addCase(updateUserProfile.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = { ...state.user, ...action.payload };
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   }
 });
