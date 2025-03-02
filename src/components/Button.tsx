@@ -61,7 +61,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondaryBackground
   },
   tertiary: {
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    paddingVertical: 0
   },
   textColor: {
     color: colors.buttonText,
