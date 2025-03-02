@@ -3,7 +3,8 @@ export const screens = {
   loginScreen: 'Login',
   registerScreen: 'Register',
   homeScreen: 'Home',
-  profileScreen: 'Profile'
+  profileScreen: 'Profile',
+  editProfileScreen: 'EditProfile'
 } as const;
 
 export type Screens = keyof typeof screens;
@@ -14,4 +15,5 @@ export type RootStackParamList = {
   Register: undefined;
   Home: undefined;
   Profile: undefined;
+  EditProfile: undefined;
 };

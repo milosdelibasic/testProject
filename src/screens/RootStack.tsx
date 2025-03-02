@@ -1,3 +1,5 @@
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSelector } from 'react-redux';
 
@@ -6,10 +8,13 @@ import AuthScreen from './AuthScreen';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import ProfileScreen from './ProfileScreen';
+import EditProfileScreen from './EditProfileScreen';
 
 import { RootStackParamList, screens } from '../utils/screens';
 import { RootState } from '../redux/store';
 import { colors } from '../utils/colors';
+
+import userIcon from '../../assets/icons/user.png';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -30,8 +35,23 @@ const RootStack: React.FC = () => {
           },
           headerTintColor: colors.primaryText
         }}>
-        <Stack.Screen name={screens.homeScreen} component={HomeScreen} />
+        <Stack.Screen
+          name={screens.homeScreen}
+          component={HomeScreen}
+          options={({ navigation }) => ({
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate(screens.profileScreen)}>
+                <Image source={userIcon} style={styles.profileImage} />
+              </TouchableOpacity>
+            )
+          })}
+        />
         <Stack.Screen name={screens.profileScreen} component={ProfileScreen} />
+        <Stack.Screen
+          name={screens.editProfileScreen}
+          component={EditProfileScreen}
+        />
       </Stack.Navigator>
     );
   }
@@ -59,5 +79,14 @@ const RootStack: React.FC = () => {
     </Stack.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  profileImage: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginRight: 16
+  }
+});
 
 export default RootStack;
