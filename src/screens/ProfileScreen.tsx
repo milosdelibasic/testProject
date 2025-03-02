@@ -1,5 +1,14 @@
-import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
 
+import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
@@ -13,7 +22,11 @@ import { logout } from '../redux/slices/authSlice';
 
 import { colors } from '../utils/colors';
 
+const BASE_URL = 'https://reqres.in/api';
+
 const ProfileScreen: React.FC = () => {
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
   const { user, loadingUserInfo } = useSelector(
     (state: RootState) => state.auth
   );
@@ -28,6 +41,38 @@ const ProfileScreen: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+  };
+
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      'Delete Account',
+      'Are you sure you want to delete your account?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setIsDeleteLoading(true);
+              await axios.delete(`${BASE_URL}/users/${user?.id}`);
+
+              Alert.alert('Success', 'Account successfully deleted.');
+              dispatch(logout());
+            } catch (error) {
+              console.error('Delete account failed:', error);
+              Alert.alert(
+                'Error',
+                'Failed to delete account. Please try again.'
+              );
+            } finally {
+              setIsDeleteLoading(false);
+            }
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -50,9 +95,21 @@ const ProfileScreen: React.FC = () => {
           onPress={navigateToEditProfile}
           style="primary"
           label="Edit Profile"
+          disabled={isDeleteLoading}
         />
-        <Button onPress={handleLogout} style="secondary" label="Sign out" />
-        <Button onPress={() => {}} style="tertiary" label="Delete account" />
+        <Button
+          onPress={handleLogout}
+          style="secondary"
+          label="Sign out"
+          disabled={isDeleteLoading}
+        />
+        <Button
+          onPress={handleDeleteAccount}
+          style="tertiary"
+          label="Delete account"
+          disabled={isDeleteLoading}
+          isLoading={isDeleteLoading}
+        />
       </View>
     </SafeAreaView>
   );
