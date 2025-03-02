@@ -80,6 +80,7 @@ const HomeScreen: React.FC = () => {
 
   const renderFooter = () => {
     if (!isLoading) return null;
+
     return (
       <View style={styles.footer}>
         <ActivityIndicator size="large" color={colors.primaryText} />
@@ -93,7 +94,9 @@ const HomeScreen: React.FC = () => {
       <FlatList
         data={users}
         renderItem={renderItem}
-        keyExtractor={(item: User) => item.id.toString()}
+        keyExtractor={(item: User, index) =>
+          item.id?.toString() || index.toString()
+        }
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.75}
         ListFooterComponent={renderFooter}
