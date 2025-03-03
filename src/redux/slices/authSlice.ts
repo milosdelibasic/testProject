@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { User } from '../../utils/interfaces';
 
@@ -78,6 +79,9 @@ export const loginUser = createAsyncThunk(
         return rejectWithValue('User not found');
       }
 
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+
       dispatch(fetchUserProfile(user.id));
 
       return { email, token, id: user.id };
@@ -103,6 +107,9 @@ export const registerUser = createAsyncThunk(
       const id = response.data.id;
       const token = response.data.token;
 
+      await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('user', JSON.stringify({ id, email }));
+
       dispatch(fetchUserProfile(id));
 
       return { email, token, id };
@@ -123,6 +130,9 @@ const authSlice = createSlice({
       state.token = null;
       state.loading = false;
       state.error = null;
+
+      AsyncStorage.removeItem('token');
+      AsyncStorage.removeItem('user');
     }
   },
   extraReducers: builder => {

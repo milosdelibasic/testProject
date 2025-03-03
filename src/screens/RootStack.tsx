@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeScreen from './HomeScreen';
 import AuthScreen from './AuthScreen';
@@ -11,7 +13,9 @@ import ProfileScreen from './ProfileScreen';
 import EditProfileScreen from './EditProfileScreen';
 
 import { RootStackParamList, screens } from '../utils/screens';
-import { RootState } from '../redux/store';
+import { AppDispatch, RootState } from '../redux/store';
+import { loginUser } from '../redux/slices/authSlice';
+
 import { colors } from '../utils/colors';
 
 import userIcon from '../../assets/icons/user.png';
@@ -19,7 +23,35 @@ import userIcon from '../../assets/icons/user.png';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+
   const { user } = useSelector((state: RootState) => state.auth);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    //Auto login for cached users, in reality we would show splash screen until this part finishes
+    const loadStoredData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const userData = await AsyncStorage.getItem('user');
+
+        if (token && userData) {
+          const user = JSON.parse(userData);
+          dispatch(loginUser({ email: user.email, password: 'dummyPassword' }));
+        }
+      } catch (error) {
+        console.log('Error loading cached data', error);
+      } finally {
+        setLoading(false);
+        //hide splash screen
+      }
+    };
+
+    loadStoredData();
+  }, []);
+
+  if (loading) return null;
 
   if (user) {
     return (
