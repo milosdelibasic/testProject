@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from 'react';
+import { useState, useRef, useLayoutEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, Alert } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../components/Button';
 
-import { updateUserProfile } from '../redux/slices/authSlice'; // Updated import
-import { RootStackParamList, screens } from '../utils/screens';
+import { updateUserProfile } from '../redux/slices/authSlice';
+import { RootStackParamList } from '../utils/screens';
 import { AppDispatch, RootState } from '../redux/store';
 
 import { colors } from '../utils/colors';
@@ -27,6 +27,9 @@ const EditProfileScreen: React.FC = () => {
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const lastNameRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: 'Edit Profile' });
@@ -77,25 +80,33 @@ const EditProfileScreen: React.FC = () => {
           onChangeText={setFirstName}
           placeholder="Enter your first name"
           placeholderTextColor={colors.secondaryText}
+          returnKeyType="next"
+          onSubmitEditing={() => lastNameRef.current?.focus()}
         />
 
         <Text style={styles.label}>Last Name</Text>
         <TextInput
+          ref={lastNameRef}
           style={styles.input}
           value={lastName}
           onChangeText={setLastName}
           placeholder="Enter your last name"
           placeholderTextColor={colors.secondaryText}
+          returnKeyType="next"
+          onSubmitEditing={() => emailRef.current?.focus()}
         />
 
         <Text style={styles.label}>Email</Text>
         <TextInput
+          ref={emailRef}
           style={styles.input}
           value={email}
           onChangeText={setEmail}
           placeholder="Enter your email"
           keyboardType="email-address"
           placeholderTextColor={colors.secondaryText}
+          returnKeyType="done"
+          onSubmitEditing={handleSave}
         />
 
         {errorMessage ? (

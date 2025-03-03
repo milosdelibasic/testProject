@@ -1,5 +1,11 @@
-import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { useState, useRef } from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  TextInputProps
+} from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,6 +24,8 @@ const LoginScreen: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
+
+  const passwordRef = useRef<TextInput>(null);
 
   const handleLogin = () => {
     if (!email || !password) {
@@ -48,14 +56,20 @@ const LoginScreen: React.FC = () => {
         placeholderTextColor={colors.textOnDark}
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        returnKeyType="next"
+        onSubmitEditing={() => passwordRef.current?.focus()}
       />
       <TextInput
+        ref={passwordRef}
         style={styles.input}
         placeholder="Password"
         placeholderTextColor={colors.textOnDark}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        returnKeyType="done"
+        onSubmitEditing={handleLogin}
       />
       {errorMessage || error ? (
         <Text style={styles.errorText}>{errorMessage || error}</Text>

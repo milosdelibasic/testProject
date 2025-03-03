@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,6 +19,9 @@ const RegisterScreen: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
+
+  const passwordRef = useRef<TextInput>(null);
+  const confirmPasswordRef = useRef<TextInput>(null);
 
   const handleRegister = () => {
     if (!email || !password || !confirmPassword) {
@@ -54,22 +57,31 @@ const RegisterScreen: React.FC = () => {
         placeholderTextColor={colors.textOnDark}
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        returnKeyType="next"
+        onSubmitEditing={() => passwordRef.current?.focus()}
       />
       <TextInput
+        ref={passwordRef}
         style={styles.input}
         placeholder="Password"
         placeholderTextColor={colors.textOnDark}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        returnKeyType="next"
+        onSubmitEditing={() => confirmPasswordRef.current?.focus()}
       />
       <TextInput
+        ref={confirmPasswordRef}
         style={styles.input}
         placeholder="Confirm Password"
         placeholderTextColor={colors.textOnDark}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
+        returnKeyType="done"
+        onSubmitEditing={handleRegister}
       />
       {errorMessage || error ? (
         <Text style={styles.errorText}>{errorMessage || error}</Text>
